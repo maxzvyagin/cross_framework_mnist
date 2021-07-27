@@ -74,10 +74,10 @@ class NumberNet(pl.LightningModule):
         return {'loss': loss, 'logs': logs}
 
     def training_epoch_end(self, outputs):
-        pdb.set_trace()
+        # pdb.set_trace()
         loss = []
         for x in outputs:
-            loss.append(float(x['train_loss']))
+            loss.append(float(x['loss']))
         avg_loss = statistics.mean(loss)
         tensorboard_logs = {'train_loss': avg_loss}
         self.avg_training_loss_history.append(avg_loss)
