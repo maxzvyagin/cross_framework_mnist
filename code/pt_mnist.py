@@ -7,6 +7,7 @@ import numpy as np
 import os
 import pdb
 
+
 class CustomSequential(nn.Module):
     def __init__(self, config):
         super(CustomSequential, self).__init__()
@@ -16,6 +17,7 @@ class CustomSequential(nn.Module):
             nn.ReLU(),
             nn.Dropout(config['dropout']),
             nn.Linear(128, 10))
+
     def forward(self, input):
         if isinstance(input, np.ndarray):
             input = torch.from_numpy(input).float()
@@ -25,6 +27,7 @@ class CustomSequential(nn.Module):
         if isinstance(input, np.ndarray):
             input = torch.from_numpy(input).float()
         return self.model(input)
+
 
 class NumberNet(pl.LightningModule):
     def __init__(self, config):
@@ -53,7 +56,8 @@ class NumberNet(pl.LightningModule):
                                            batch_size=int(self.config['batch_size']), num_workers=4, shuffle=False)
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.config['learning_rate'], eps=self.config['adam_epsilon'])
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.config['learning_rate'],
+                                     eps=self.config['adam_epsilon'])
         return optimizer
 
     def forward(self, x):
@@ -66,19 +70,18 @@ class NumberNet(pl.LightningModule):
     def training_step_end(self, outputs):
         loss = self.criterion(outputs['forward'], outputs['expected'])
         logs = {'train_loss': loss}
-        pdb.set_trace()
+        # pdb.set_trace()
         return {'train_loss': loss, 'logs': logs}
 
-
-    def training_epoch_end(self, outputs):
-        pdb.set_trace()
-        loss = []
-        for x in outputs:
-            loss.append(float(x['train_loss']))
-        avg_loss = statistics.mean(loss)
-        tensorboard_logs = {'train_loss': avg_loss}
-        self.avg_training_loss_history.append(avg_loss)
-        return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
+    # def training_epoch_end(self, outputs):
+    #     pdb.set_trace()
+    #     loss = []
+    #     for x in outputs:
+    #         loss.append(float(x['train_loss']))
+    #     avg_loss = statistics.mean(loss)
+    #     tensorboard_logs = {'train_loss': avg_loss}
+    #     self.avg_training_loss_history.append(avg_loss)
+    #     return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
