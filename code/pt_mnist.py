@@ -73,15 +73,15 @@ class NumberNet(pl.LightningModule):
         # pdb.set_trace()
         return {'loss': loss, 'logs': logs}
 
-    # def training_epoch_end(self, outputs):
-    #     pdb.set_trace()
-    #     loss = []
-    #     for x in outputs:
-    #         loss.append(float(x['train_loss']))
-    #     avg_loss = statistics.mean(loss)
-    #     tensorboard_logs = {'train_loss': avg_loss}
-    #     self.avg_training_loss_history.append(avg_loss)
-    #     return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
+    def training_epoch_end(self, outputs):
+        pdb.set_trace()
+        loss = []
+        for x in outputs:
+            loss.append(float(x['train_loss']))
+        avg_loss = statistics.mean(loss)
+        tensorboard_logs = {'train_loss': avg_loss}
+        self.avg_training_loss_history.append(avg_loss)
+        return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
