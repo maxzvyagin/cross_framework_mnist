@@ -71,7 +71,7 @@ class NumberNet(pl.LightningModule):
         loss = self.criterion(outputs['forward'], outputs['expected'])
         logs = {'train_loss': loss}
         # pdb.set_trace()
-        return {'train_loss': loss, 'logs': logs}
+        return {'loss': loss, 'logs': logs}
 
     # def training_epoch_end(self, outputs):
     #     pdb.set_trace()
