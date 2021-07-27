@@ -75,6 +75,7 @@ if __name__ == "__main__":
     parser.add_argument('-j', '--json', default="standard.json")
     args = parser.parse_args()
     results = args.out
+    os.mkdir(results)
     os.mkdir(os.path.join(results, 'model_weights/'))
     main = os.getcwd()
     results = os.path.join(main, results)
