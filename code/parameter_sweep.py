@@ -51,6 +51,7 @@ def dual_train(config, extra_data_dir):
 
 
 if __name__ == "__main__":
+    os.environ['WANDB_ENTITY'] = "mzvyagin"
     parser = ArgumentParser("Set output directory, number of trials, and JSON files.")
     parser.add_argument('-t', '--trials', default=25)
     parser.add_argument('-o', '--out', default="results/")
