@@ -26,7 +26,7 @@ def dual_train(config, extra_data_dir):
     tf_test_acc, tf_model, tf_training_history = mnist_tf_objective(config)
     tf_model.save(model_directory+'tf_model')
 
-    search_results['tf_test_acc': tf_test_acc]
+    search_results['tf_test_acc']: tf_test_acc
     accuracy_diff = abs(pt_test_acc - tf_test_acc)
     # all the logging
     search_results['accuracy_diff'] = accuracy_diff
