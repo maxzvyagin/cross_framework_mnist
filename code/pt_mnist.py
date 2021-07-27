@@ -64,12 +64,15 @@ class NumberNet(pl.LightningModule):
         return {'forward': self.forward(x), 'expected': y}
 
     def training_step_end(self, outputs):
-        pdb.set_trace()
+        # pdb.set_trace()
         # only use when  on dp
         loss = self.criterion(outputs['forward'], outputs['expected'])
         logs = {'train_loss': loss}
         self.training_loss_history.append(loss.item())
         return {'train_loss': loss, 'logs': logs}
+
+    def training_epoch_end(self, outputs):
+        pdb.set_trace()
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
