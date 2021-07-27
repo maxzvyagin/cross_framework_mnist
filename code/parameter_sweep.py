@@ -14,7 +14,7 @@ def dual_train(config, extra_data_dir):
     # make directory to save weights in
     model_directory = os.path.join(extra_data_dir, 'model_weights/', wandb.run.name)
 
-    pt_test_acc, pt_model, pt_training_history = mnist_pt_objective(config)
+    pt_test_acc, pt_model, pt_average_training_history, pt_latest_training_history = mnist_pt_objective(config)
     pt_model.eval()
     search_results = {'pt_test_acc': pt_test_acc}
     # save torch model
@@ -31,14 +31,22 @@ def dual_train(config, extra_data_dir):
     # all the logging
     search_results['accuracy_diff'] = accuracy_diff
     search_results['tf_training_loss'] = tf_training_history
-    search_results['pt_training_loss'] = pt_training_history
+    search_results['pt_average_training_loss'] = pt_average_training_history
+    search_results['pt_latest_training_loss'] = pt_latest_training_history
     # log inidividual metrics to wanbd
     for key, value in search_results.items():
         wandb.log({key: value})
     # log custom training and validation curve charts to wandb
-    data = [[x, y] for (x, y) in zip(list(range(len(pt_training_history))), pt_training_history)]
+    data = [[x, y] for (x, y) in zip(list(range(len(pt_latest_training_history))), pt_latest_training_history)]
     table = wandb.Table(data=data, columns=["epochs", "training_loss"])
-    wandb.log({"PT Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="PT Training Loss")})
+    wandb.log({"PT Latest Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="PT Latest Training "
+                                                                                                  "Loss")})
+
+    data = [[x, y] for (x, y) in zip(list(range(len(pt_average_training_history))), pt_average_training_history)]
+    table = wandb.Table(data=data, columns=["epochs", "training_loss"])
+    wandb.log({"PT Average Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="PT Average "
+                                                                                                   "Training Loss")})
+
     data = [[x, y] for (x, y) in zip(list(range(len(tf_training_history))), tf_training_history)]
     table = wandb.Table(data=data, columns=["epochs", "training_loss"])
     wandb.log({"TF Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="TF Training Loss")})

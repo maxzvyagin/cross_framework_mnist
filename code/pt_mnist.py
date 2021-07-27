@@ -39,6 +39,7 @@ class NumberNet(pl.LightningModule):
         self.accuracy = pl.metrics.Accuracy()
         self.training_loss_history = []
         self.avg_training_loss_history = []
+        self.latest_training_loss_history = []
         self.training_loss_history = []
 
     def train_dataloader(self):
@@ -79,6 +80,7 @@ class NumberNet(pl.LightningModule):
         avg_loss = statistics.mean(loss)
         # tensorboard_logs = {'train_loss': avg_loss}
         self.avg_training_loss_history.append(avg_loss)
+        self.latest_training_loss_history.append(loss[-1])
         # return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
 
     def test_step(self, test_batch, batch_idx):
@@ -116,7 +118,7 @@ def mnist_pt_objective(config):
         trainer = pl.Trainer(max_epochs=config['epochs'])
     trainer.fit(model)
     trainer.test(model)
-    return (model.test_accuracy, model.model, model.avg_training_loss_history)
+    return (model.test_accuracy, model.model, model.avg_training_loss_history, model.latest_training_loss_history)
 
 
 if __name__ == "__main__":
