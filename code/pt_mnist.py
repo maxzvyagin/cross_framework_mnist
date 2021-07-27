@@ -34,6 +34,10 @@ class NumberNet(pl.LightningModule):
         self.test_loss = None
         self.test_accuracy = None
         self.accuracy = pl.metrics.Accuracy()
+        self.training_loss_history = []
+        self.training_loss_history = []
+        self.validation_loss_history = []
+        self.validation_acc_history = []
 
     def train_dataloader(self):
         return torch.utils.data.DataLoader(torchvision.datasets.MNIST("~/resiliency/", train=True,
@@ -62,7 +66,20 @@ class NumberNet(pl.LightningModule):
         # only use when  on dp
         loss = self.criterion(outputs['forward'], outputs['expected'])
         logs = {'train_loss': loss}
+        self.training_loss_history.append(loss.item())
         return {'loss': loss, 'logs': logs}
+
+    def validation_step(self, val_batch, batch_idx):
+        x, y = val_batch
+        return {'forward': self.forward(x), 'expected': y}
+
+    def validation_step_end(self, outputs):
+        loss = self.criterion(outputs['forward'], outputs['expected'])
+        accuracy = self.accuracy(outputs['forward'], outputs['expected'])
+        logs = {'validation_loss': loss, 'validation_accuracy': accuracy}
+        self.validation_loss_history.append(loss.item())
+        self.validation_acc_history.append(accuracy.item())
+        return {'validation_loss': loss, 'logs': logs, 'validation_accuracy': accuracy}
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
