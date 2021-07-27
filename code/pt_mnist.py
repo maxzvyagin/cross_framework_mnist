@@ -79,9 +79,9 @@ class NumberNet(pl.LightningModule):
         for x in outputs:
             loss.append(float(x['loss']))
         avg_loss = statistics.mean(loss)
-        tensorboard_logs = {'train_loss': avg_loss}
+        # tensorboard_logs = {'train_loss': avg_loss}
         self.avg_training_loss_history.append(avg_loss)
-        return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
+        # return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
