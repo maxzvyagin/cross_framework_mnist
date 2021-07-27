@@ -69,10 +69,11 @@ def dual_train(config, extra_data_dir):
 
 
 if __name__ == "__main__":
-    args = ArgumentParser("Set output directory, number of trials, and JSON files.")
-    args.add_argument('-t', '--trials', default=25)
-    args.add_argument('-o', '--out', default="results/")
-    args.add_argument('-j', '--json', default="standard.json")
+    parser = ArgumentParser("Set output directory, number of trials, and JSON files.")
+    parser.add_argument('-t', '--trials', default=25)
+    parser.add_argument('-o', '--out', default="results/")
+    parser.add_argument('-j', '--json', default="standard.json")
+    args = parser.parse_args()
     results = args.out
     os.mkdir(os.path.join(results, 'model_weights/'))
     main = os.getcwd()
