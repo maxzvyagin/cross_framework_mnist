@@ -116,7 +116,7 @@ def mnist_pt_objective(config):
         trainer = pl.Trainer(max_epochs=config['epochs'])
     trainer.fit(model)
     trainer.test(model)
-    return (model.test_accuracy, model.model, model.training_loss_history)
+    return (model.test_accuracy, model.model, model.avg_training_loss_history)
 
 
 if __name__ == "__main__":
