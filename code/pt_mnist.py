@@ -98,14 +98,14 @@ class NumberNet(pl.LightningModule):
         for x in outputs:
             loss.append(float(x['test_loss']))
         avg_loss = statistics.mean(loss)
-        tensorboard_logs = {'test_loss': avg_loss}
+        # tensorboard_logs = {'test_loss': avg_loss}
         self.test_loss = avg_loss
         accuracy = []
         for x in outputs:
             accuracy.append(float(x['test_accuracy']))
         avg_accuracy = statistics.mean(accuracy)
         self.test_accuracy = avg_accuracy
-        return {'avg_test_loss': avg_loss, 'log': tensorboard_logs, 'avg_test_accuracy': avg_accuracy}
+        # return {'avg_test_loss': avg_loss, 'log': tensorboard_logs, 'avg_test_accuracy': avg_accuracy}
 
 
 def mnist_pt_objective(config):
