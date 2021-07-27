@@ -64,8 +64,17 @@ class NumberNet(pl.LightningModule):
         # only use when  on dp
         loss = self.criterion(outputs['forward'], outputs['expected'])
         logs = {'train_loss': loss}
-        self.training_loss_history.append(loss.item())
-        return {'loss': loss, 'logs': logs}
+        # self.training_loss_history.append(loss.item())
+        return {'train_loss': loss, 'logs': logs}
+
+    def training_epoch_end(self, outputs):
+        loss = []
+        for x in outputs:
+            loss.append(float(x['train_loss']))
+        avg_loss = statistics.mean(loss)
+        tensorboard_logs = {'average_train_loss': avg_loss}
+        self.training_loss_history.append(avg_loss.item())
+        return {'avg_train_loss': avg_loss, 'log': tensorboard_logs}
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
