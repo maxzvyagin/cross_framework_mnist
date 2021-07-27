@@ -62,5 +62,5 @@ if __name__ == "__main__":
     main = os.getcwd()
     results = os.path.join(main, results)
     spaceray.run_experiment(dual_train, args.json, args.trials, args.out, mode="max", metric="accuracy_diff",
-                            start_space=0, project_name="mnist_comparison", extra_data_dir=results, num_splits=8,
+                            start_space=0, project_name="mzvyagin/mnist_comparison", extra_data_dir=results, num_splits=8,
                             wandb_key="b24709b3f0a9bf7eae4f3a30280c90cd38d1d5f7")
