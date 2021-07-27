@@ -4,8 +4,6 @@ import torchvision
 import torch
 import statistics
 import numpy as np
-import os
-import pdb
 
 
 class CustomSequential(nn.Module):
