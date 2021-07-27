@@ -36,8 +36,6 @@ class NumberNet(pl.LightningModule):
         self.accuracy = pl.metrics.Accuracy()
         self.training_loss_history = []
         self.training_loss_history = []
-        self.validation_loss_history = []
-        self.validation_acc_history = []
 
     def train_dataloader(self):
         return torch.utils.data.DataLoader(torchvision.datasets.MNIST("~/resiliency/", train=True,
@@ -68,18 +66,6 @@ class NumberNet(pl.LightningModule):
         logs = {'train_loss': loss}
         self.training_loss_history.append(loss.item())
         return {'loss': loss, 'logs': logs}
-
-    def validation_step(self, val_batch, batch_idx):
-        x, y = val_batch
-        return {'forward': self.forward(x), 'expected': y}
-
-    def validation_step_end(self, outputs):
-        loss = self.criterion(outputs['forward'], outputs['expected'])
-        accuracy = self.accuracy(outputs['forward'], outputs['expected'])
-        logs = {'validation_loss': loss, 'validation_accuracy': accuracy}
-        self.validation_loss_history.append(loss.item())
-        self.validation_acc_history.append(accuracy.item())
-        return {'validation_loss': loss, 'logs': logs, 'validation_accuracy': accuracy}
 
     def test_step(self, test_batch, batch_idx):
         x, y = test_batch
@@ -116,8 +102,7 @@ def mnist_pt_objective(config):
         trainer = pl.Trainer(max_epochs=config['epochs'])
     trainer.fit(model)
     trainer.test(model)
-    return (model.test_accuracy, model.model, model.training_loss_history,
-            model.validation_loss_history, model.validation_acc_history)
+    return (model.test_accuracy, model.model, model.training_loss_history)
 
 
 if __name__ == "__main__":

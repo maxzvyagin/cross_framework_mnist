@@ -14,7 +14,7 @@ def dual_train(config, extra_data_dir):
     # make directory to save weights in
     model_directory = os.path.join(extra_data_dir, 'model_weights/', wandb.run.name)
 
-    pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = mnist_pt_objective(config)
+    pt_test_acc, pt_model, pt_training_history = mnist_pt_objective(config)
     pt_model.eval()
     search_results = {'pt_test_acc': pt_test_acc}
     # save torch model
@@ -23,7 +23,7 @@ def dual_train(config, extra_data_dir):
     del pt_model
     torch.cuda.empty_cache()
 
-    tf_test_acc, tf_model, tf_training_history, tf_val_loss, tf_val_acc = mnist_tf_objective(config)
+    tf_test_acc, tf_model, tf_training_history = mnist_tf_objective(config)
     tf_model.save(model_directory+'tf_model')
 
     search_results['tf_test_acc': tf_test_acc]
@@ -31,11 +31,7 @@ def dual_train(config, extra_data_dir):
     # all the logging
     search_results['accuracy_diff'] = accuracy_diff
     search_results['tf_training_loss'] = tf_training_history
-    search_results['tf_validation_loss'] = tf_val_loss
-    search_results['tf_validation_acc'] = tf_val_acc
     search_results['pt_training_loss'] = pt_training_history
-    search_results['pt_validation_loss'] = pt_val_loss
-    search_results['pt_validation_acc'] = pt_val_acc
     # log inidividual metrics to wanbd
     for key, value in search_results.items():
         wandb.log({key: value})
@@ -43,23 +39,9 @@ def dual_train(config, extra_data_dir):
     data = [[x, y] for (x, y) in zip(list(range(len(pt_training_history))), pt_training_history)]
     table = wandb.Table(data=data, columns=["epochs", "training_loss"])
     wandb.log({"PT Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="PT Training Loss")})
-    data = [[x, y] for (x, y) in zip(list(range(len(pt_val_loss))), pt_val_loss)]
-    table = wandb.Table(data=data, columns=["epochs", "validation loss"])
-    wandb.log({"PT Validation Loss": wandb.plot.line(table, "epochs", "validation loss", title="PT Validation Loss")})
-    data = [[x, y] for (x, y) in zip(list(range(len(pt_val_acc))), pt_val_acc)]
-    table = wandb.Table(data=data, columns=["epochs", "validation accuracy"])
-    wandb.log({"PT Validation Accuracy": wandb.plot.line(table, "epochs", "validation accuracy",
-                                                         title="PT Validation Accuracy")})
     data = [[x, y] for (x, y) in zip(list(range(len(tf_training_history))), tf_training_history)]
     table = wandb.Table(data=data, columns=["epochs", "training_loss"])
     wandb.log({"TF Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="TF Training Loss")})
-    data = [[x, y] for (x, y) in zip(list(range(len(tf_val_loss))), tf_val_loss)]
-    table = wandb.Table(data=data, columns=["epochs", "validation loss"])
-    wandb.log({"TF Validation Loss": wandb.plot.line(table, "epochs", "validation loss", title="TF Validation Loss")})
-    data = [[x, y] for (x, y) in zip(list(range(len(tf_val_acc))), tf_val_acc)]
-    table = wandb.Table(data=data, columns=["epochs", "validation accuracy"])
-    wandb.log({"TF Validation Accuracy": wandb.plot.line(table, "epochs", "validation accuracy",
-                                                         title="TF Validation Accuracy")})
     try:
         tune.report(**search_results)
     except:
