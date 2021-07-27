@@ -66,6 +66,7 @@ class NumberNet(pl.LightningModule):
     def training_step_end(self, outputs):
         loss = self.criterion(outputs['forward'], outputs['expected'])
         logs = {'train_loss': loss}
+        pdb.set_trace()
         return {'train_loss': loss, 'logs': logs}
 
 
