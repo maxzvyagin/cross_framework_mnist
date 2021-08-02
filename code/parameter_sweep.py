@@ -66,6 +66,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--out', default="results/")
     parser.add_argument('-j', '--json', default="standard.json")
     parser.add_argument('-g', '--gpus', default=1, help="num gpus per trials")
+    parser.add_argument('-w', '--wandb_name', default="mnist_comparison")
     args = parser.parse_args()
     results = args.out
     os.mkdir(results)
@@ -73,5 +74,5 @@ if __name__ == "__main__":
     main = os.getcwd()
     results = os.path.join(main, results)
     spaceray.run_experiment(dual_train, args.json, args.trials, args.out, mode="max", metric="accuracy_diff",
-                            start_space=0, project_name="mnist_comparison", extra_data_dir=results, num_splits=8,
+                            start_space=0, project_name=args.wandb_name, extra_data_dir=results, num_splits=8,
                             wandb_key="f89dd177ee1c0e61382850a5a0cf389910abb3d2", cpu=1, gpu=int(args.gpus))
